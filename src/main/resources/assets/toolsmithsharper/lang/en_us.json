@@ -1,3 +1,7 @@
 {
-  "item.toolsmithsharper.whetstone": "Whetstone"
+  "item.toolsmithsharper.whetstone": "Whetstone",
+  "item.toolsmithsharper.fire_oil": "Fire Oil",
+  "item.toolsmithsharper.poison_oil": "Poison Oil",
+  "item.toolsmithsharper.vampire_oil": "Vampire Oil",
+  "item.toolsmithsharper.frost_oil": "Frost Oil"
 }
