@@ -27,9 +27,9 @@ public abstract class ItemMixin {
 
 			int max;
 			if (coating.equals("none")) {
-				max = ToolsmithSharper.isTool(stack) ? ToolsmithSharper.MAX_SHARPER_USES * 2 : ToolsmithSharper.MAX_SHARPER_USES;
+				max = ToolsmithSharper.isTool(stack) ? ToolsmithSharper.MAX_SHARPER_BASE_USES * 2 : ToolsmithSharper.MAX_SHARPER_BASE_USES;
 			} else {
-				max = tier.equals("extended") ? ToolsmithSharper.MAX_COATING_USES * 2 : ToolsmithSharper.MAX_COATING_USES;
+				max = tier.equals("extended") ? ToolsmithSharper.MAX_COATING_BASE_USES * 2 : ToolsmithSharper.MAX_COATING_BASE_USES;
 			}
 
 			float step = (float) uses / (float) max;

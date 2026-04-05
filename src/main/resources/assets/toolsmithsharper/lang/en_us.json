@@ -1,4 +1,13 @@
 {
+  "item.toolsmithsharper.whetstone": "Whetstone",
+  "item.toolsmithsharper.fire_oil": "Fire Oil",
+  "item.toolsmithsharper.poison_oil": "Poison Oil",
+  "item.toolsmithsharper.vampire_oil": "Vampire Oil",
+  "item.toolsmithsharper.frost_oil": "Frost Oil",
+  "item.toolsmithsharper.luck_oil": "Luck Oil",
+
+
+
   "config.toolsmithsharper.title": "Toolsmith Sharper Configuration",
   "config.toolsmithsharper.category.mechanics": "Core Mechanics",
   "config.toolsmithsharper.category.balancing": "Power Balancing",
@@ -8,6 +17,9 @@
 
   "config.toolsmithsharper.max_coating_uses": "Max Coating Uses",
   "config.toolsmithsharper.max_coating_uses.tooltip": "Number of hits for oil coatings (Fire, Poison, etc.). (Default: 10)",
+
+  "config.toolsmithsharper.max_whetstone_uses": "Max Wehetstone Uses",
+  "config.toolsmithsharper.max_whetstone_uses.tooltip": "Number of uses for a whetstone tool). (Default: 3)",
 
   "config.toolsmithsharper.xp_cost": "XP Level Cost",
   "config.toolsmithsharper.xp_cost.tooltip": "XP levels consumed per sharpening action. (Default: 1)",
@@ -25,10 +37,14 @@
   "config.toolsmithsharper.suffix.speed": "Speed",
 
 
-  "item.toolsmithsharper.whetstone": "Whetstone",
-  "item.toolsmithsharper.fire_oil": "Fire Oil",
-  "item.toolsmithsharper.poison_oil": "Poison Oil",
-  "item.toolsmithsharper.vampire_oil": "Vampire Oil",
-  "item.toolsmithsharper.frost_oil": "Frost Oil",
-  "item.toolsmithsharper.luck_oil": "Luck Oil"
+  "message.toolsmithsharper.volatile_oil": "This oil is too volatile for gathering tools! Use it on weapons.",
+  "message.toolsmithsharper.already_honed": "This item is already perfectly honed with this oil!",
+  "message.toolsmithsharper.need_xp": "You need %s XP level!",
+  "message.toolsmithsharper.too_damaged": "Tool too damaged! (Min 20%)",
+  "command.toolsmithsharper.set_uses": "[Toolsmith Sharper] Max Honed Uses set : %s",
+  "command.toolsmithsharper.set_coating_uses": "[Toolsmith Sharper] Max Coating Uses set : %s",
+  "command.toolsmithsharper.set_damage": "[Toolsmith Sharper] Weapon Damage Multiplier set : %s",
+  "command.toolsmithsharper.set_speed": "[Toolsmith Sharper] Tool Speed Boost set : %s",
+  "command.toolsmithsharper.set_cost": "[Toolsmith Sharper] XP Cost set : %s",
+  "command.toolsmithsharper.set_repair": "[Toolsmith Sharper] Repair Percentage set : %s%%"
 }

@@ -34,6 +34,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.entity.EquipmentSlot;
@@ -60,12 +61,16 @@ public class ToolsmithSharper implements ModInitializer {
 	// ==========================================
 	// CONFIGURATION
 	// ==========================================
-	public static int MAX_SHARPER_USES = 32;
-	public static int MAX_COATING_USES = 10;
+	public static int MAX_SHARPER_BASE_USES = 32;
+	public static int MAX_COATING_BASE_USES = 10;
 	public static double DAMAGE_MULTIPLIER = 0.25;
 	public static double SPEED_BOOST = 2.0;
 	public static int XP_COST = 1;
 	public static double REPAIR_PERCENTAGE = 0.10;
+	public static int MAX_WHETSTONE_USES = 3;
+	static {
+		loadConfig();
+	}
 
 	// ==========================================
 	// ITEMS CLASS
@@ -141,7 +146,7 @@ public class ToolsmithSharper implements ModInitializer {
 	// ==========================================
 	public static final RegistryKey<Item> WHETSTONE_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "whetstone"));
 	public static final Item WHETSTONE = Registry.register(Registries.ITEM, WHETSTONE_KEY.getValue(),
-			new ToolsmithItem(new Item.Settings().registryKey(WHETSTONE_KEY).maxDamage(3), 30, "none", false));
+			new ToolsmithItem(new Item.Settings().registryKey(WHETSTONE_KEY).maxDamage(MAX_WHETSTONE_USES), 30, "none", false));
 
 	public static final RegistryKey<Item> FIRE_OIL_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "fire_oil"));
 	public static final Item FIRE_OIL = Registry.register(Registries.ITEM, FIRE_OIL_KEY.getValue(),
@@ -173,7 +178,6 @@ public class ToolsmithSharper implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		loadConfig();
 		registerCommands();
 
 		// Grindstone
@@ -193,8 +197,7 @@ public class ToolsmithSharper implements ModInitializer {
 				else if (offStack.isOf(LUCK_OIL)) { isValidItem = true; coating = "luck"; }
 
 				if (!isValidItem) {
-					if (world.isClient()) player.sendMessage(Text.literal("§cYou need Flint or a Coating Oil in your offhand!"), true);
-					return ActionResult.FAIL;
+					return ActionResult.PASS;
 				}
 
 				String tier = offStack.getOrDefault(SHARPER_COATING_TIER, "base");
@@ -204,7 +207,7 @@ public class ToolsmithSharper implements ModInitializer {
 					offStack.decrement(1);
 					player.getItemCooldownManager().set(player.getMainHandStack(), 60);
 				}
-				return result;
+				return result == ActionResult.SUCCESS ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 			return ActionResult.PASS;
 		});
@@ -256,14 +259,14 @@ public class ToolsmithSharper implements ModInitializer {
 
 		if (!coating.equals("none") && !coating.equals("luck")) {
 			if (isTool(target) && !isAxe(target)) {
-				if (world.isClient()) player.sendMessage(Text.literal("§cThis oil is too volatile for gathering tools! Use it on weapons."), true);
+				if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.volatile_oil").formatted(Formatting.RED), true);
 				return false;
 			}
 		}
 
 		int usesToApply;
-		if (coating.equals("none")) usesToApply = isTool(target) ? MAX_SHARPER_USES * 2 : MAX_SHARPER_USES;
-		else usesToApply = tier.equals("extended") ? MAX_COATING_USES * 2 : MAX_COATING_USES;
+		if (coating.equals("none")) usesToApply = isTool(target) ? MAX_SHARPER_BASE_USES * 2 : MAX_SHARPER_BASE_USES;
+		else usesToApply = tier.equals("extended") ? MAX_COATING_BASE_USES * 2 : MAX_COATING_BASE_USES;
 
 		int currentUses = target.getOrDefault(SHARPER_USES, 0);
 		String currentCoating = target.getOrDefault(SHARPER_COATING, "none");
@@ -271,13 +274,13 @@ public class ToolsmithSharper implements ModInitializer {
 
 		// Already max sharpened
 		if (currentUses >= usesToApply && currentCoating.equals(coating) && currentTier.equals(tier)) {
-			if (world.isClient()) player.sendMessage(Text.literal("§eThis item is already perfectly honed with this oil!"), true);
+			if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.already_honed").formatted(Formatting.YELLOW), true);
 			return false;
 		}
 
 		// XP Check
 		if (player.experienceLevel < XP_COST && !player.getAbilities().creativeMode) {
-			if (world.isClient()) player.sendMessage(Text.literal("§cYou need " + XP_COST + " XP level!"), true);
+			if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.need_xp", XP_COST).formatted(Formatting.RED), true);
 			return false;
 		}
 
@@ -285,7 +288,7 @@ public class ToolsmithSharper implements ModInitializer {
 		if (target.isDamageable()) {
 			float durability = (float)(target.getMaxDamage() - target.getDamage()) / target.getMaxDamage();
 			if (durability < 0.20f) {
-				if (world.isClient()) player.sendMessage(Text.literal("§cTool too damaged! (Min 20%)"), true);
+				if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.too_damaged").formatted(Formatting.RED), true);
 				return false;
 			}
 		}
@@ -321,16 +324,16 @@ public class ToolsmithSharper implements ModInitializer {
 				case "luck" -> world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.2f);
 			}
 
-            switch (coating) {
-                case "fire" ->
-                        ((ServerWorld) world).spawnParticles(ParticleTypes.FLAME, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.05);
-                case "frost" ->
-                        ((ServerWorld) world).spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.05);
-                case "luck" ->
-                        ((ServerWorld) world).spawnParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 15, 0.4, 0.4, 0.4, 0.1);
-                default ->
-                        ((ServerWorld) world).spawnParticles(ParticleTypes.CRIT, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
-            }
+			switch (coating) {
+				case "fire" ->
+						((ServerWorld) world).spawnParticles(ParticleTypes.FLAME, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.05);
+				case "frost" ->
+						((ServerWorld) world).spawnParticles(ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.05);
+				case "luck" ->
+						((ServerWorld) world).spawnParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 15, 0.4, 0.4, 0.4, 0.1);
+				default ->
+						((ServerWorld) world).spawnParticles(ParticleTypes.CRIT, player.getX(), player.getY() + 1, player.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
+			}
 		}
 		return ActionResult.SUCCESS;
 	}
@@ -345,7 +348,7 @@ public class ToolsmithSharper implements ModInitializer {
 	// =========================================================================
 
 	public static void applySharperEffect(World world, ItemStack stack, String coating, String tier) {
-		int usesToApply = coating.equals("none") ? (isTool(stack) ? MAX_SHARPER_USES * 2 : MAX_SHARPER_USES) : (tier.equals("extended") ? MAX_COATING_USES * 2 : MAX_COATING_USES);
+		int usesToApply = coating.equals("none") ? (isTool(stack) ? MAX_SHARPER_BASE_USES * 2 : MAX_SHARPER_BASE_USES) : (tier.equals("extended") ? MAX_COATING_BASE_USES * 2 : MAX_COATING_BASE_USES);
 		stack.set(SHARPER_USES, usesToApply);
 
 		if (coating.equals("none")) {
@@ -455,11 +458,14 @@ public class ToolsmithSharper implements ModInitializer {
 
 	private static void updateEnchantmentLevel(World world, ItemStack stack, RegistryKey<Enchantment> enchantmentKey, int level) {
 		Registry<Enchantment> registry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
-
 		ItemEnchantmentsComponent currentEnchants = stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
 		ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(currentEnchants);
 
-		builder.set(registry.getOrThrow(enchantmentKey), level);
+		if (level <= 0) {
+			builder.remove(e -> e.matchesKey(enchantmentKey));
+		} else {
+			builder.set(registry.getOrThrow(enchantmentKey), level);
+		}
 
 		stack.set(DataComponentTypes.ENCHANTMENTS, builder.build());
 	}
@@ -471,12 +477,12 @@ public class ToolsmithSharper implements ModInitializer {
 	private void registerCommands() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(CommandManager.literal("toolsmithsharper")
-					.then(CommandManager.literal("setUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_SHARPER_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] Max Honed Uses set : §b" + MAX_SHARPER_USES), false); return 1; })))
-					.then(CommandManager.literal("setCoatingUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_COATING_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] Max Coating Uses set : §b" + MAX_COATING_USES), false); return 1; })))
-					.then(CommandManager.literal("setDamage").then(CommandManager.argument("value (%)", DoubleArgumentType.doubleArg(0.0)).executes(context -> { DAMAGE_MULTIPLIER = DoubleArgumentType.getDouble(context, "value (%)"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] Weapon Damage Multiplier set : §b" + DAMAGE_MULTIPLIER), false); return 1; })))
-					.then(CommandManager.literal("setSpeed").then(CommandManager.argument("value", DoubleArgumentType.doubleArg(0.0)).executes(context -> { SPEED_BOOST = DoubleArgumentType.getDouble(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] Tool Speed Boost set : §b" + SPEED_BOOST), false); return 1; })))
-					.then(CommandManager.literal("setCost").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { XP_COST = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] XP Cost set : §b" + XP_COST), false); return 1; })))
-					.then(CommandManager.literal("setRepair").then(CommandManager.argument("value (%)", DoubleArgumentType.doubleArg(0.0)).executes(context -> { REPAIR_PERCENTAGE = DoubleArgumentType.getDouble(context, "value (%)"); saveConfig(); context.getSource().sendFeedback(() -> Text.literal("§a[Toolsmith Sharper] Repair Percentage set : §b" + (REPAIR_PERCENTAGE * 100) + "%"), false); return 1; })))
+					.then(CommandManager.literal("setUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_SHARPER_BASE_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_uses", MAX_SHARPER_BASE_USES).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setCoatingUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_COATING_BASE_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_coating_uses", MAX_COATING_BASE_USES).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setDamage").then(CommandManager.argument("value (%)", DoubleArgumentType.doubleArg(0.0)).executes(context -> { DAMAGE_MULTIPLIER = DoubleArgumentType.getDouble(context, "value (%)"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_damage", DAMAGE_MULTIPLIER).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setSpeed").then(CommandManager.argument("value", DoubleArgumentType.doubleArg(0.0)).executes(context -> { SPEED_BOOST = DoubleArgumentType.getDouble(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_speed", SPEED_BOOST).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setCost").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { XP_COST = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_cost", XP_COST).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setRepair").then(CommandManager.argument("value (%)", DoubleArgumentType.doubleArg(0.0)).executes(context -> { REPAIR_PERCENTAGE = DoubleArgumentType.getDouble(context, "value (%)"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_repair", (REPAIR_PERCENTAGE * 100)).formatted(Formatting.GREEN), false); return 1; })))
 			);
 		});
 	}
@@ -493,8 +499,9 @@ public class ToolsmithSharper implements ModInitializer {
 			if (file.exists()) {
 				Properties props = new Properties();
 				props.load(new FileInputStream(file));
-				MAX_SHARPER_USES = Integer.parseInt(props.getProperty("maxUses", "32"));
-				MAX_COATING_USES = Integer.parseInt(props.getProperty("maxCoatingUses", "10"));
+				MAX_SHARPER_BASE_USES = Integer.parseInt(props.getProperty("maxUses", "32"));
+				MAX_COATING_BASE_USES = Integer.parseInt(props.getProperty("maxCoatingUses", "10"));
+				MAX_WHETSTONE_USES = Integer.parseInt(props.getProperty("maxWheatstoneUses", "3"));
 				DAMAGE_MULTIPLIER = Double.parseDouble(props.getProperty("damageMultiplier", "0.25"));
 				SPEED_BOOST = Double.parseDouble(props.getProperty("speedBoost", "2.0"));
 				XP_COST = Integer.parseInt(props.getProperty("xpCost", "1"));
@@ -506,8 +513,9 @@ public class ToolsmithSharper implements ModInitializer {
 	public static void saveConfig() {
 		try {
 			Properties props = new Properties();
-			props.setProperty("maxUses", String.valueOf(MAX_SHARPER_USES));
-			props.setProperty("maxCoatingUses", String.valueOf(MAX_COATING_USES));
+			props.setProperty("maxUses", String.valueOf(MAX_SHARPER_BASE_USES));
+			props.setProperty("maxCoatingUses", String.valueOf(MAX_COATING_BASE_USES));
+			props.setProperty("maxWheatstoneUses", String.valueOf(MAX_WHETSTONE_USES));
 			props.setProperty("damageMultiplier", String.valueOf(DAMAGE_MULTIPLIER));
 			props.setProperty("speedBoost", String.valueOf(SPEED_BOOST));
 			props.setProperty("xpCost", String.valueOf(XP_COST));
