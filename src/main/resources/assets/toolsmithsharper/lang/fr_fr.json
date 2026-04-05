@@ -22,5 +22,13 @@
   "config.toolsmithsharper.speed_boost.tooltip": "Vitesse plate ajoutée à l'efficacité de minage des outils. (Défaut: 2.0)",
 
   "config.toolsmithsharper.suffix.damage": "Dégâts",
-  "config.toolsmithsharper.suffix.speed": "Vitesse"
+  "config.toolsmithsharper.suffix.speed": "Vitesse",
+
+
+  "item.toolsmithsharper.whetstone": "Pierre d'aiguisage",
+  "item.toolsmithsharper.fire_oil": "Huile enflammée",
+  "item.toolsmithsharper.poison_oil": "Huile empoisonnées",
+  "item.toolsmithsharper.vampire_oil": "Huile vampirique",
+  "item.toolsmithsharper.frost_oil": "Huile givrée",
+  "item.toolsmithsharper.luck_oil": "Huile fortunée"
 }

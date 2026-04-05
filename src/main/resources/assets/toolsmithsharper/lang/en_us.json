@@ -22,5 +22,13 @@
   "config.toolsmithsharper.speed_boost.tooltip": "Flat speed added to tools mining efficiency. (Default: 2.0)",
 
   "config.toolsmithsharper.suffix.damage": "Damage",
-  "config.toolsmithsharper.suffix.speed": "Speed"
+  "config.toolsmithsharper.suffix.speed": "Speed",
+
+
+  "item.toolsmithsharper.whetstone": "Whetstone",
+  "item.toolsmithsharper.fire_oil": "Fire Oil",
+  "item.toolsmithsharper.poison_oil": "Poison Oil",
+  "item.toolsmithsharper.vampire_oil": "Vampire Oil",
+  "item.toolsmithsharper.frost_oil": "Frost Oil",
+  "item.toolsmithsharper.luck_oil": "Luck Oil"
 }
