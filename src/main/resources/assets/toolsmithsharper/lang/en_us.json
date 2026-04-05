@@ -7,7 +7,6 @@
   "item.toolsmithsharper.luck_oil": "Luck Oil",
 
 
-
   "config.toolsmithsharper.title": "Toolsmith Sharper Configuration",
   "config.toolsmithsharper.category.mechanics": "Core Mechanics",
   "config.toolsmithsharper.category.balancing": "Power Balancing",
@@ -20,6 +19,9 @@
 
   "config.toolsmithsharper.max_whetstone_uses": "Max Wehetstone Uses",
   "config.toolsmithsharper.max_whetstone_uses.tooltip": "Number of uses for a whetstone tool). (Default: 3)",
+
+  "config.toolsmithsharper.whetstone_use_time": "Whetstone Use Time (Ticks)",
+  "config.toolsmithsharper.whetstone_use_time.tooltip": "Time in ticks it takes to sharpen a tool (20 ticks = 1 second)",
 
   "config.toolsmithsharper.xp_cost": "XP Level Cost",
   "config.toolsmithsharper.xp_cost.tooltip": "XP levels consumed per sharpening action. (Default: 1)",
@@ -41,8 +43,12 @@
   "message.toolsmithsharper.already_honed": "This item is already perfectly honed with this oil!",
   "message.toolsmithsharper.need_xp": "You need %s XP level!",
   "message.toolsmithsharper.too_damaged": "Tool too damaged! (Min 20%)",
+
+
   "command.toolsmithsharper.set_uses": "[Toolsmith Sharper] Max Honed Uses set : %s",
   "command.toolsmithsharper.set_coating_uses": "[Toolsmith Sharper] Max Coating Uses set : %s",
+  "command.toolsmithsharper.set_whetstone_uses": "[Toolsmith Sharper] Max Whetstone Uses set : %s",
+  "command.toolsmithsharper.set_use_time": "[Toolsmith Sharper] Whetstone Use Time set to : %s",
   "command.toolsmithsharper.set_damage": "[Toolsmith Sharper] Weapon Damage Multiplier set : %s",
   "command.toolsmithsharper.set_speed": "[Toolsmith Sharper] Tool Speed Boost set : %s",
   "command.toolsmithsharper.set_cost": "[Toolsmith Sharper] XP Cost set : %s",

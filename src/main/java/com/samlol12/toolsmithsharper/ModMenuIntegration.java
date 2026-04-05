@@ -51,6 +51,14 @@ public class ModMenuIntegration implements ModMenuApi {
                     .setSaveConsumer(newValue -> ToolsmithSharper.MAX_WHETSTONE_USES = newValue)
                     .build());
 
+            // Champ INT : Whetstone Use Time
+            mechanics.addEntry(entryBuilder.startIntField(Text.translatable("config.toolsmithsharper.whetstone_use_time"), ToolsmithSharper.WHETSTONE_USE_TIME)
+                    .setDefaultValue(30)
+                    .setMin(1)
+                    .setTooltip(Text.translatable("config.toolsmithsharper.whetstone_use_time.tooltip"))
+                    .setSaveConsumer(newValue -> ToolsmithSharper.WHETSTONE_USE_TIME = newValue)
+                    .build());
+
             // Champ INT : XP Cost
             mechanics.addEntry(entryBuilder.startIntField(Text.translatable("config.toolsmithsharper.xp_cost"), ToolsmithSharper.XP_COST)
                     .setDefaultValue(1)

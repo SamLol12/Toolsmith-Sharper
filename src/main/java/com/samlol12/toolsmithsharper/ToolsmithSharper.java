@@ -68,6 +68,7 @@ public class ToolsmithSharper implements ModInitializer {
 	public static int XP_COST = 1;
 	public static double REPAIR_PERCENTAGE = 0.10;
 	public static int MAX_WHETSTONE_USES = 3;
+	public static int WHETSTONE_USE_TIME = 40;
 	static {
 		loadConfig();
 	}
@@ -112,7 +113,7 @@ public class ToolsmithSharper implements ModInitializer {
 
 		@Override
 		public int getMaxUseTime(ItemStack stack, LivingEntity user) {
-			return useTime;
+			return this.coating.equals("none") ? WHETSTONE_USE_TIME : useTime;
 		}
 
 		@Override
@@ -479,6 +480,8 @@ public class ToolsmithSharper implements ModInitializer {
 			dispatcher.register(CommandManager.literal("toolsmithsharper")
 					.then(CommandManager.literal("setUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_SHARPER_BASE_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_uses", MAX_SHARPER_BASE_USES).formatted(Formatting.GREEN), false); return 1; })))
 					.then(CommandManager.literal("setCoatingUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_COATING_BASE_USES = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_coating_uses", MAX_COATING_BASE_USES).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setWhetstoneUses").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { MAX_WHETSTONE_USES =  IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_whetstone_uses", MAX_WHETSTONE_USES).formatted(Formatting.GREEN), false); return 1; })))
+					.then(CommandManager.literal("setUseTime").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { WHETSTONE_USE_TIME = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_use_time", WHETSTONE_USE_TIME).formatted(Formatting.GREEN), false); return 1; })))
 					.then(CommandManager.literal("setDamage").then(CommandManager.argument("value (%)", DoubleArgumentType.doubleArg(0.0)).executes(context -> { DAMAGE_MULTIPLIER = DoubleArgumentType.getDouble(context, "value (%)"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_damage", DAMAGE_MULTIPLIER).formatted(Formatting.GREEN), false); return 1; })))
 					.then(CommandManager.literal("setSpeed").then(CommandManager.argument("value", DoubleArgumentType.doubleArg(0.0)).executes(context -> { SPEED_BOOST = DoubleArgumentType.getDouble(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_speed", SPEED_BOOST).formatted(Formatting.GREEN), false); return 1; })))
 					.then(CommandManager.literal("setCost").then(CommandManager.argument("value", IntegerArgumentType.integer(1)).executes(context -> { XP_COST = IntegerArgumentType.getInteger(context, "value"); saveConfig(); context.getSource().sendFeedback(() -> Text.translatable("command.toolsmithsharper.set_cost", XP_COST).formatted(Formatting.GREEN), false); return 1; })))
@@ -502,6 +505,7 @@ public class ToolsmithSharper implements ModInitializer {
 				MAX_SHARPER_BASE_USES = Integer.parseInt(props.getProperty("maxUses", "32"));
 				MAX_COATING_BASE_USES = Integer.parseInt(props.getProperty("maxCoatingUses", "10"));
 				MAX_WHETSTONE_USES = Integer.parseInt(props.getProperty("maxWheatstoneUses", "3"));
+				WHETSTONE_USE_TIME = Integer.parseInt(props.getProperty("whetstoneUseTime", "30"));
 				DAMAGE_MULTIPLIER = Double.parseDouble(props.getProperty("damageMultiplier", "0.25"));
 				SPEED_BOOST = Double.parseDouble(props.getProperty("speedBoost", "2.0"));
 				XP_COST = Integer.parseInt(props.getProperty("xpCost", "1"));
@@ -516,6 +520,7 @@ public class ToolsmithSharper implements ModInitializer {
 			props.setProperty("maxUses", String.valueOf(MAX_SHARPER_BASE_USES));
 			props.setProperty("maxCoatingUses", String.valueOf(MAX_COATING_BASE_USES));
 			props.setProperty("maxWheatstoneUses", String.valueOf(MAX_WHETSTONE_USES));
+			props.setProperty("whetstoneUseTime", String.valueOf(WHETSTONE_USE_TIME));
 			props.setProperty("damageMultiplier", String.valueOf(DAMAGE_MULTIPLIER));
 			props.setProperty("speedBoost", String.valueOf(SPEED_BOOST));
 			props.setProperty("xpCost", String.valueOf(XP_COST));

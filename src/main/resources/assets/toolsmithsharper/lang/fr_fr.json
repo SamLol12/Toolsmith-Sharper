@@ -7,7 +7,6 @@
   "item.toolsmithsharper.luck_oil": "Huile fortunée",
 
 
-
   "config.toolsmithsharper.title": "Configuration de Toolsmith Sharper",
   "config.toolsmithsharper.category.mechanics": "Mécaniques de Base",
   "config.toolsmithsharper.category.balancing": "Équilibrage de Puissance",
@@ -17,6 +16,9 @@
 
   "config.toolsmithsharper.max_whetstone_uses": "Usage d'une Pierre d'aiguisage Max",
   "config.toolsmithsharper.max_whetstone_uses.tooltip": "Nombre d'utilisation avant que la pierre d'aiguisage ne se brise. (Défaut: 3)",
+
+  "config.toolsmithsharper.whetstone_use_time": "Temps d'aiguisage (Ticks)",
+  "config.toolsmithsharper.whetstone_use_time.tooltip": "Temps en ticks pour aiguiser un outil (20 ticks = 1 seconde)",
 
   "config.toolsmithsharper.max_coating_uses": "Usages de Revêtement Max",
   "config.toolsmithsharper.max_coating_uses.tooltip": "Nombre de coups pour les huiles (Feu, Poison, etc.). (Défaut: 10)",
@@ -41,8 +43,12 @@
   "message.toolsmithsharper.already_honed": "Cet objet est déjà parfaitement aiguisé avec cette huile !",
   "message.toolsmithsharper.need_xp": "Tu as besoin de %s niveau(x) d'XP !",
   "message.toolsmithsharper.too_damaged": "Outil trop endommagé ! (Min 20%)",
+
+
   "command.toolsmithsharper.set_uses": "[Toolsmith Sharper] Utilisations max de l'aiguisage défini sur : %s",
   "command.toolsmithsharper.set_coating_uses": "[Toolsmith Sharper] Utilisations max des revêtements défini sur : %s",
+  "command.toolsmithsharper.set_whetstone_uses": "[Toolsmith Sharper] Utilisations max de la pierre défini sur : %s",
+  "command.toolsmithsharper.set_use_time": "[Toolsmith Sharper] Temps d'utilisation de la pierre défini sur : %s",
   "command.toolsmithsharper.set_damage": "[Toolsmith Sharper] Multiplicateur de dégâts défini sur : %s",
   "command.toolsmithsharper.set_speed": "[Toolsmith Sharper] Bonus de vitesse défini sur : %s",
   "command.toolsmithsharper.set_cost": "[Toolsmith Sharper] Coût en XP défini sur : %s",
