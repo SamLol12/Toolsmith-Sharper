@@ -38,7 +38,7 @@ Toutes les huiles ne sont pas adaptées à tous les usages. Le mod impose désor
 La durée de vie de vos bonus dépend de l'environnement. Soyez attentif aux éléments :
 
 * **🌊 L'Eau & la Pluie :** Éteignent les huiles de **Feu** et lavent celles de **Poison** 2x plus vite.
-* **☀️ La Chaleur Extrême :** L'huile de **Givre (Frost)** fond 2x plus vite dans les Déserts, le Nether et les Savanes, ou si vous touchez de la **Lave** ou du **Feu**.
+* **☀️ La Chaleur Extrême :** L'huile de **Givre** fond 2x plus vite dans les Déserts, le Nether et les Savanes, ou si vous touchez de la **Lave** ou du **Feu**.
 * **🌿 L'Écrin Biologique :** Le **Poison** est plus stable dans les Marais et Jungles. Le **Givre** dure plus longtemps dans les biomes froids.
 * **🌙 Le Cycle Circadien :** Les huiles de **Vampire** et de **Chance** s'usent moins vite durant la **nuit**.
 
