@@ -1,6 +1,10 @@
 package com.samlol12.toolsmithsharper.mixin;
 
 import com.samlol12.toolsmithsharper.ToolsmithSharper;
+import com.samlol12.toolsmithsharper.config.ModConfig;
+import com.samlol12.toolsmithsharper.registry.ModComponents;
+import com.samlol12.toolsmithsharper.util.ModUtils;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,23 +17,23 @@ public abstract class ItemMixin {
 
 	@Inject(method = "isItemBarVisible", at = @At("HEAD"), cancellable = true)
 	private void showSharperBar(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-		if (stack.contains(ToolsmithSharper.SHARPER_USES)) {
+		if (stack.contains(ModComponents.SHARPER_USES)) {
 			cir.setReturnValue(true);
 		}
 	}
 
 	@Inject(method = "getItemBarStep", at = @At("HEAD"), cancellable = true)
 	private void getSharperBarStep(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-		if (stack.contains(ToolsmithSharper.SHARPER_USES)) {
-			int uses = stack.getOrDefault(ToolsmithSharper.SHARPER_USES, 0);
-			String coating = stack.getOrDefault(ToolsmithSharper.SHARPER_COATING, "none");
-			String tier = stack.getOrDefault(ToolsmithSharper.SHARPER_COATING_TIER, "base");
+		if (stack.contains(ModComponents.SHARPER_USES)) {
+			int uses = stack.getOrDefault(ModComponents.SHARPER_USES, 0);
+			String coating = stack.getOrDefault(ModComponents.SHARPER_COATING, "none");
+			String tier = stack.getOrDefault(ModComponents.SHARPER_COATING_TIER, "base");
 
 			int max;
 			if (coating.equals("none")) {
-				max = ToolsmithSharper.isTool(stack) ? ToolsmithSharper.MAX_SHARPER_BASE_USES * 2 : ToolsmithSharper.MAX_SHARPER_BASE_USES;
+				max = ModUtils.isTool(stack) ? ModConfig.MAX_SHARPER_BASE_USES * 2 : ModConfig.MAX_SHARPER_BASE_USES;
 			} else {
-				max = tier.equals("extended") ? ToolsmithSharper.MAX_COATING_BASE_USES * 2 : ToolsmithSharper.MAX_COATING_BASE_USES;
+				max = tier.equals("extended") ? ModConfig.MAX_COATING_BASE_USES * 2 : ModConfig.MAX_COATING_BASE_USES;
 			}
 
 			float step = (float) uses / (float) max;
@@ -39,8 +43,8 @@ public abstract class ItemMixin {
 
 	@Inject(method = "getItemBarColor", at = @At("HEAD"), cancellable = true)
 	private void getSharperBarColor(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-		if (stack.contains(ToolsmithSharper.SHARPER_USES)) {
-			String coating = stack.getOrDefault(ToolsmithSharper.SHARPER_COATING, "none");
+		if (stack.contains(ModComponents.SHARPER_USES)) {
+			String coating = stack.getOrDefault(ModComponents.SHARPER_COATING, "none");
 			int color = switch (coating) {
 				case "fire" -> 0xFF8C00;    // Dark Orange
 				case "poison" -> 0x006400;  // Dark Green

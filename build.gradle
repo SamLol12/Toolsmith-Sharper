@@ -82,3 +82,53 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+// Task to increment the mod version in gradle.properties
+/*
+ * Usage: [major].[minor].[patch]
+ *   ./gradlew releaseMod -Ptype=patch  (default, increments patch version)
+ *   ./gradlew releaseMod -Ptype=minor  (increments minor version and resets patch)
+ *   ./gradlew releaseMod -Ptype=major  (increments major version and resets minor and patch)
+ */
+task incrementVersion {
+    doLast {
+        def propsFile = file('gradle.properties')
+        def props = new Properties()
+        props.load(propsFile.newDataInputStream())
+
+        def currentVersion = props.getProperty('mod_version')
+        def parts = currentVersion.split('\\.') 
+        
+        def major = parts[0] as Integer
+        def minor = parts[1] as Integer
+        def patch = parts[2] as Integer
+
+        def versionType = project.hasProperty('type') ? project.property('type') : 'patch'
+
+        if (versionType == 'major') {
+            major += 1
+            minor = 0
+            patch = 0
+        } else if (versionType == 'minor') {
+            minor += 1
+            patch = 0
+        } else {
+            patch += 1
+        }
+
+        def newVersion = "${major}.${minor}.${patch}"
+
+        def content = propsFile.text.replaceFirst("mod_version=$currentVersion", "mod_version=$newVersion")
+        propsFile.text = content
+
+        println "Next (${versionType}) for the next build : ${currentVersion} -> ${newVersion}"
+    }
+}
+
+task releaseMod {
+    group = "build"
+    description = "Builds the mod and increments the version for the next development cycle. Usage: ./gradlew releaseMod -Ptype=[patch|minor|major] (default is patch)"
+    
+    dependsOn 'build'
+    finalizedBy 'incrementVersion'
+}

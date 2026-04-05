@@ -1,49 +1,51 @@
 {
   "item.toolsmithsharper.whetstone": "Pierre d'aiguisage",
   "item.toolsmithsharper.fire_oil": "Huile enflammée",
-  "item.toolsmithsharper.poison_oil": "Huile empoisonnées",
+  "item.toolsmithsharper.poison_oil": "Huile empoisonnée",
   "item.toolsmithsharper.vampire_oil": "Huile vampirique",
   "item.toolsmithsharper.frost_oil": "Huile givrée",
   "item.toolsmithsharper.luck_oil": "Huile fortunée",
 
-
   "config.toolsmithsharper.title": "Configuration de Toolsmith Sharper",
   "config.toolsmithsharper.category.mechanics": "Mécaniques de Base",
   "config.toolsmithsharper.category.balancing": "Équilibrage de Puissance",
-
   "config.toolsmithsharper.max_uses": "Usages d'Aiguisage Max",
   "config.toolsmithsharper.max_uses.tooltip": "Nombre de coups avant que l'aiguisage de base ne disparaisse. (Défaut: 32)",
-
   "config.toolsmithsharper.max_whetstone_uses": "Usage d'une Pierre d'aiguisage Max",
   "config.toolsmithsharper.max_whetstone_uses.tooltip": "Nombre d'utilisation avant que la pierre d'aiguisage ne se brise. (Défaut: 3)",
-
   "config.toolsmithsharper.whetstone_use_time": "Temps d'aiguisage (Ticks)",
-  "config.toolsmithsharper.whetstone_use_time.tooltip": "Temps en ticks pour aiguiser un outil (20 ticks = 1 seconde)",
-
+  "config.toolsmithsharper.whetstone_use_time.tooltip": "Temps en ticks pour aiguiser un outil (40 ticks = 1 seconde)",
   "config.toolsmithsharper.max_coating_uses": "Usages de Revêtement Max",
   "config.toolsmithsharper.max_coating_uses.tooltip": "Nombre de coups pour les huiles (Feu, Poison, etc.). (Défaut: 10)",
-
   "config.toolsmithsharper.xp_cost": "Coût en Niveaux d'XP",
   "config.toolsmithsharper.xp_cost.tooltip": "Niveaux d'XP consommés par aiguisage. (Défaut: 1)",
-
   "config.toolsmithsharper.repair_percentage": "Durabilité Réparée",
   "config.toolsmithsharper.repair_percentage.tooltip": "Pourcentage de durabilité restauré lors de l'aiguisage. (Défaut: 10%)",
-
   "config.toolsmithsharper.damage_multiplier": "Bonus de Dégâts d'Arme",
   "config.toolsmithsharper.damage_multiplier.tooltip": "Dégâts d'attaque supplémentaires pour les armes aiguisées (0.25 = +25%). (Défaut: 0.25)",
-
   "config.toolsmithsharper.speed_boost": "Boost de Vitesse de Minage",
   "config.toolsmithsharper.speed_boost.tooltip": "Vitesse plate ajoutée à l'efficacité de minage des outils. (Défaut: 2.0)",
-
   "config.toolsmithsharper.suffix.damage": "Dégâts",
   "config.toolsmithsharper.suffix.speed": "Vitesse",
-
 
   "message.toolsmithsharper.volatile_oil": "Cette huile est trop instable pour les outils de récolte ! Utilisez-la sur des armes.",
   "message.toolsmithsharper.already_honed": "Cet objet est déjà parfaitement aiguisé avec cette huile !",
   "message.toolsmithsharper.need_xp": "Tu as besoin de %s niveau(x) d'XP !",
   "message.toolsmithsharper.too_damaged": "Outil trop endommagé ! (Min 20%)",
 
+  "tooltip.toolsmithsharper.tier.extended": " (Étendu)",
+  "tooltip.toolsmithsharper.effect.fire": "§6§l♦ §cEffet : Huile enflammée%s",
+  "tooltip.toolsmithsharper.charges.fire": "  §7Charges : §c%s",
+  "tooltip.toolsmithsharper.effect.poison": "§2§l♦ §2Effet : Huile empoisonnée%s",
+  "tooltip.toolsmithsharper.charges.poison": "  §7Charges : §2%s",
+  "tooltip.toolsmithsharper.effect.vampire": "§4§l♦ §4Effet : Huile vampirique%s",
+  "tooltip.toolsmithsharper.charges.vampire": "  §7Charges : §4%s",
+  "tooltip.toolsmithsharper.effect.frost": "§1§l♦ §9Effet : Huile givrée%s",
+  "tooltip.toolsmithsharper.charges.frost": "  §7Charges : §9%s",
+  "tooltip.toolsmithsharper.effect.luck": "§6§l♦ §eEffet : Huile fortunée%s",
+  "tooltip.toolsmithsharper.charges.luck": "  §7Charges : §e%s",
+  "tooltip.toolsmithsharper.status.honed": "§8§l♦ §7Statut : Tranchant Aiguisé",
+  "tooltip.toolsmithsharper.charges.honed": "  §7Charges : §7%s",
 
   "command.toolsmithsharper.set_uses": "[Toolsmith Sharper] Utilisations max de l'aiguisage défini sur : %s",
   "command.toolsmithsharper.set_coating_uses": "[Toolsmith Sharper] Utilisations max des revêtements défini sur : %s",
