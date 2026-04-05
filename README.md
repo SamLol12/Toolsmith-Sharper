@@ -28,7 +28,7 @@ Toutes les huiles ne sont pas adaptées à tous les usages. Le mod impose désor
 | 🧪 **Poison Oil** | Empoisonne la cible | ❌ *Incompatible* |
 | 🧛 **Vampire Oil** | Vol de vie (Heal) | ❌ *Incompatible* |
 | ❄️ **Frost Oil** | Ralentit l'ennemi | ❌ *Incompatible* |
-| 🍀 **Luck Oil** | **Butin (Looting)** | **Fortune** |
+| 🍀 **Luck Oil** | Butin (Looting) | Fortune |
 
 *Les **Armes** incluent : Épées, Haches et Lances. Les **Outils** incluent : Pioches, Pelles et Houes.*
 
