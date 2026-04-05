@@ -46,7 +46,7 @@ Le développement continue ! Voici les fonctionnalités envisagées pour les pro
 
 * **📈 Niveaux de Pierres à Aiguiser :** Introduction de variantes en Fer, Diamant et Netherite avec une durabilité accrue et une vitesse d'application plus rapide.
 * **🏹 Support des Armes à Distance :** Possibilité d'enduire les arcs et les arbalètes pour appliquer des effets aux flèches tirées.
-* **🧪 Nouvelles Huiles
+* **🧪 Nouvelles Huiles**
 * **⚡ Intégration Thunder :** Un bonus massif pour l'huile de Givre ou de Chance lors des orages.
 * **🛡️ Polissage d'Armure :** Extension du système pour "polir" l'armure et obtenir des bonus de résistance ou de recul temporaires.
 
