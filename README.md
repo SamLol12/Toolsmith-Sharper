@@ -15,6 +15,9 @@ Améliorez les performances de base de votre équipement (Dégâts pour les arme
 * **Entretien préventif :** L'aiguisage **répare 10%** (configurable) de la durabilité de l'objet.
 * **Conditions :** Nécessite **1 niveau d'XP** et un outil ayant au moins **20% de sa durabilité**.
 
+### 📊 Indicateur Visuel : Barre de Durabilité
+Fini les devinettes en plein combat ! Le mod modifie l'affichage de la barre de durabilité de vos objets pour vous indiquer visuellement l'état de votre affûtage ou de l'huile appliquée. Vous pouvez ainsi suivre en temps réel l'usure de vos bonus et le nombre d'utilisations restantes directement depuis votre inventaire ou votre barre d'action.
+
 ### 🧪 Huiles & Spécialisation (Équilibrage)
 Toutes les huiles ne sont pas adaptées à tous les usages. Le mod impose désormais une distinction stricte entre le combat et la récolte :
 
