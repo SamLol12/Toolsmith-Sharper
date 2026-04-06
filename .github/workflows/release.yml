@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -37,7 +40,7 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-        
+
       # 3. Changelog Generation
       - name: Generate Changelog
         id: changelog
@@ -99,6 +102,5 @@ jobs:
           body_path: CHANGELOG.md
           files: build/libs/*.jar
           make_latest: true
-          allowUpdates: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
