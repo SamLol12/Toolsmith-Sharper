@@ -3,7 +3,10 @@
 	"package": "com.samlol12.toolsmithsharper.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ItemMixin"
+		"ItemMixin",
+		"HandledScreenMixin",
+		"LivingEntityMixin",
+		"InGameHudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

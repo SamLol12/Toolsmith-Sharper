@@ -25,6 +25,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.util.Hand;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.LivingEntity;
 
 public class ModUtils {
 
@@ -72,6 +77,19 @@ public class ModUtils {
             float durability = (float)(target.getMaxDamage() - target.getDamage()) / target.getMaxDamage();
             if (durability < 0.20f) {
                 if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.too_damaged").formatted(Formatting.RED), true);
+                return false;
+            }
+        }
+
+        // Coating-specific checks
+        if (coating.equals("luck")) {
+            int currentEnchantLevel = isWeapon(target) || isAxe(target) || isTool(target)
+                ? EnchantmentHelper.getLevel(world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.LOOTING), target)
+                : EnchantmentHelper.getLevel(world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE), target);
+            
+            int oilLevel = tier.equals("amplified") ? 3 : 1;
+            if (currentEnchantLevel >= oilLevel) {
+                if (world.isClient()) player.sendMessage(Text.translatable("message.toolsmithsharper.already_luck").formatted(Formatting.RED), true);
                 return false;
             }
         }
@@ -123,6 +141,9 @@ public class ModUtils {
         return ActionResult.SUCCESS;
     }
 
+    // =========================================================================
+    // COMBAT EFFECTS
+    // =========================================================================
     public static void applySharperEffect(World world, ItemStack stack, String coating, String tier) {
         int usesToApply = coating.equals("none") ? (isTool(stack) ? ModConfig.MAX_SHARPER_BASE_USES * 2 : ModConfig.MAX_SHARPER_BASE_USES) 
                 : (tier.equals("extended") ? ModConfig.MAX_COATING_BASE_USES * 2 : ModConfig.MAX_COATING_BASE_USES);
@@ -159,6 +180,25 @@ public class ModUtils {
             }
         }
         stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, attrBuilder.build());
+    }
+
+    public static void applyCoatingHitEffects(PlayerEntity attacker, LivingEntity target, String coating, String tier) {
+        if (coating.equals("none")) return;
+
+        // Lecture dynamique depuis la configuration
+        int duration = tier.equals("extended") ? ModConfig.EFFECT_DURATION_EXTENDED : ModConfig.EFFECT_DURATION_BASE;
+        int amplifier = tier.equals("amplified") ? ModConfig.EFFECT_AMPLIFIER_AMPLIFIED : ModConfig.EFFECT_AMPLIFIER_BASE;
+
+        switch (coating) {
+            case "fire" -> {
+                float fireSeconds = tier.equals("amplified") ? ModConfig.FIRE_SECONDS_AMPLIFIED : ModConfig.FIRE_SECONDS_BASE;
+                target.setOnFireFor(fireSeconds);
+            }
+            case "poison" -> target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, duration, amplifier));
+            case "frost" -> target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, duration, amplifier));
+            case "vampire" -> attacker.heal(tier.equals("amplified") ? ModConfig.VAMPIRE_HEAL_AMPLIFIED : ModConfig.VAMPIRE_HEAL_BASE);
+            case "luck" -> attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, duration * 2, amplifier)); // Luck dure 2x plus longtemps pour être utile
+        }
     }
 
     public static void decrementUses(ItemStack stack, PlayerEntity player, World world) {
@@ -211,22 +251,29 @@ public class ModUtils {
 				stack.remove(ModComponents.SHARPER_USES);
 				stack.remove(ModComponents.SHARPER_COATING);
 				stack.remove(ModComponents.SHARPER_COATING_TIER);
+				stack.remove(DataComponentTypes.ATTRIBUTE_MODIFIERS);
 
-				AttributeModifiersComponent.Builder builder = getModifiersBuilder(stack);
-				stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, builder.build());
-
+                // Feedback sounds and particles
 				world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 0.6f, 1.8f);
+                if (!world.isClient()) {
+                    ((ServerWorld) world).spawnParticles(ParticleTypes.ENCHANTED_HIT, player.getX(), player.getY() + 1, player.getZ(), 15, 0.3, 0.3, 0.3, 0.1);
+                }
 			} else {
 				stack.set(ModComponents.SHARPER_USES, current - drainAmount);
 			}
 		}
     }
+    // =========================================================================
 
     // =========================================================================
     // HELPERS
     // =========================================================================
     public static AttributeModifiersComponent.Builder getModifiersBuilder(ItemStack stack) {
-        AttributeModifiersComponent currentMods = stack.getOrDefault(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT);
+        AttributeModifiersComponent currentMods = stack.get(DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        if (currentMods == null) {
+            currentMods = stack.getItem().getComponents().getOrDefault(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT);
+        }
+        
         AttributeModifiersComponent.Builder builder = AttributeModifiersComponent.builder();
         for (AttributeModifiersComponent.Entry entry : currentMods.modifiers()) {
             if (!entry.modifier().id().equals(ModComponents.SHARPER_DAMAGE_ID) && !entry.modifier().id().equals(ModComponents.SHARPER_SPEED_ID)) {
@@ -248,5 +295,9 @@ public class ModUtils {
         }
 
         stack.set(DataComponentTypes.ENCHANTMENTS, builder.build());
+    }
+
+    public static Hand getOppositeHand(Hand hand) {
+        return (hand == Hand.MAIN_HAND) ? Hand.OFF_HAND : Hand.MAIN_HAND;
     }
 }

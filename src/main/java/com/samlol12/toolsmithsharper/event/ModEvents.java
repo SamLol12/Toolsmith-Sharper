@@ -53,7 +53,7 @@ public class ModEvents {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stackInHand = player.getStackInHand(hand);
             if (stackInHand.getItem() instanceof ToolsmithItem toolsmithItem) {
-                Hand otherHand = (hand == Hand.MAIN_HAND) ? Hand.OFF_HAND : Hand.MAIN_HAND;
+                Hand otherHand = ModUtils.getOppositeHand(hand);
                 ItemStack targetStack = player.getStackInHand(otherHand);
                 String tier = stackInHand.getOrDefault(ModComponents.SHARPER_COATING_TIER, "base");
 
@@ -66,28 +66,10 @@ public class ModEvents {
             return ActionResult.PASS;
         });
 
-        // Callback Entity Attack
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (!world.isClient() && hand == Hand.MAIN_HAND) {
-                ItemStack stack = player.getStackInHand(hand);
-                if (stack.contains(ModComponents.SHARPER_USES) && entity instanceof LivingEntity livingTarget) {
-                    String coating = stack.getOrDefault(ModComponents.SHARPER_COATING, "none");
-                    String tier = stack.getOrDefault(ModComponents.SHARPER_COATING_TIER, "base");
-                    switch (coating) {
-						case "fire" -> livingTarget.setOnFireFor(tier.equals("amplified") ? 8 : 4);
-						case "poison" -> livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 100, tier.equals("amplified") ? 1 : 0));
-						case "vampire" -> player.heal(tier.equals("amplified") ? 2.0f : 1.0f);
-						case "frost" -> livingTarget.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, tier.equals("amplified") ? 1 : 0));
-						case "luck" -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 200, tier.equals("amplified") ? 1 : 0));
-					}
-                }
-                ModUtils.decrementUses(stack, player, world);
-            }
-            return ActionResult.PASS;
-        });
-
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            if (!world.isClient()) ModUtils.decrementUses(player.getMainHandStack(), player, world);
+            if (!world.isClient() && state.getHardness(world, pos) != 0.0F) {
+                ModUtils.decrementUses(player.getMainHandStack(), player, world);
+            }
         });
     }
 }

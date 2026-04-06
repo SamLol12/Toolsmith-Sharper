@@ -32,7 +32,7 @@ public class ToolsmithItem extends Item {
         if (!this.coating.equals("none")) return ActionResult.PASS;
 
         ItemStack stack = user.getStackInHand(hand);
-        Hand otherHand = (hand == Hand.MAIN_HAND) ? Hand.OFF_HAND : Hand.MAIN_HAND;
+        Hand otherHand = ModUtils.getOppositeHand(hand);
         ItemStack target = user.getStackInHand(otherHand);
         String tier = stack.getOrDefault(ModComponents.SHARPER_COATING_TIER, "base");
 
@@ -57,7 +57,7 @@ public class ToolsmithItem extends Item {
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         if (user instanceof PlayerEntity player) {
             Hand hand = player.getStackInHand(Hand.MAIN_HAND) == stack ? Hand.MAIN_HAND : Hand.OFF_HAND;
-            Hand otherHand = (hand == Hand.MAIN_HAND) ? Hand.OFF_HAND : Hand.MAIN_HAND;
+            Hand otherHand = ModUtils.getOppositeHand(hand);
             ItemStack target = player.getStackInHand(otherHand);
             String tier = stack.getOrDefault(ModComponents.SHARPER_COATING_TIER, "base");
 
