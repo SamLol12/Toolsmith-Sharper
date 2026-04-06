@@ -85,7 +85,7 @@ public class ModMenuIntegration implements ModMenuApi {
             globalEffects.add(entryBuilder.startIntField(Text.translatable("config.toolsmithsharper.effect_duration_extended"), ModConfig.EFFECT_DURATION_EXTENDED).setDefaultValue(200).build());
             effects.addEntry(globalEffects.build());
 
-            // Group : Feu & Vampire
+            // Group : Fire & Vampire
             SubCategoryBuilder specificOils = entryBuilder.startSubCategory(Text.translatable("config.toolsmithsharper.subcategory.specific_oils").formatted(Formatting.DARK_RED));
             specificOils.add(entryBuilder.startFloatField(Text.translatable("config.toolsmithsharper.fire_seconds_amplified"), ModConfig.FIRE_SECONDS_AMPLIFIED).setDefaultValue(8.0f).build());
             specificOils.add(entryBuilder.startFloatField(Text.translatable("config.toolsmithsharper.vampire_heal_amplified"), ModConfig.VAMPIRE_HEAL_AMPLIFIED).setDefaultValue(2.0f).build());
