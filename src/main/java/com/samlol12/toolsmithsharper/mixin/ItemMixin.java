@@ -1,6 +1,5 @@
 package com.samlol12.toolsmithsharper.mixin;
 
-import com.samlol12.toolsmithsharper.ToolsmithSharper;
 import com.samlol12.toolsmithsharper.config.ModConfig;
 import com.samlol12.toolsmithsharper.registry.ModComponents;
 import com.samlol12.toolsmithsharper.util.ModUtils;
