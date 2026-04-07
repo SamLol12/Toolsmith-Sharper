@@ -210,24 +210,24 @@ task incrementVersion {
 
 task releaseMod {
     group = "build"
-    description = "Génère le changelog, build, et publie sur GitHub et Modrinth."
+    description = "Build le mod et le publie sur GitHub et Modrinth (basé sur le CHANGELOG.md généré et édité)."
     
-    dependsOn 'build', 'generateChangelog'
+    dependsOn 'build'
     
-    tasks.named('modrinth').configure { mustRunAfter 'build', 'generateChangelog' }
-    tasks.named('githubRelease').configure { mustRunAfter 'build', 'generateChangelog' }
+    tasks.named('modrinth').configure { mustRunAfter 'build' }
+    tasks.named('githubRelease').configure { mustRunAfter 'build' }
 
     finalizedBy 'modrinth', 'githubRelease'
     
     doLast {
-        println "🚀 Lancement de la séquence de Release..."
+        println "🚀 Lancement de la séquence de Release avec le changelog actuel..."
     }
 }
 
 /* ==============================================================================
  * 🚀 GUIDE DE PUBLICATION (RELEASE WORKFLOW)
  * ==============================================================================
- * Pour publier une nouvelle version du mod, suivez ces DEUX étapes le jour de la sortie :
+ * Pour publier une nouvelle version du mod, suivez ces TROIS étapes :
  *
  * ÉTAPE 1 : Préparer et incrémenter la nouvelle version
  * -----------------------------------------------------
@@ -237,20 +237,23 @@ task releaseMod {
  * ./gradlew incrementVersion -Ptype=patch  -> (ex: 1.1.1 -> 1.1.2) [PAR DÉFAUT]
  * ./gradlew incrementVersion -Ptype=minor  -> (ex: 1.1.1 -> 1.2.0)
  * ./gradlew incrementVersion -Ptype=major  -> (ex: 1.1.1 -> 2.0.0)
- * * Optionnel : Vous pouvez aussi changer le type de version (release, beta, alpha) :
- * ./gradlew incrementVersion -Ptype=minor -Pvtype=beta
  *
- * ÉTAPE 2 : Générer le changelog et Publier
+ * ÉTAPE 2 : Générer et éditer le changelog
  * -----------------------------------------------------
- * Cette commande va compiler le mod avec la nouvelle version définie à l'étape 1,
- * générer le CHANGELOG.md en lisant vos commits Git (feat:, fix:, etc.),
- * puis publier le tout simultanément sur GitHub Releases et Modrinth.
+ * Cette commande va générer le fichier CHANGELOG.md en lisant vos commits Git.
+ * * Usage :
+ * ./gradlew generateChangelog
+ *
+ * ÉTAPE 3 : Compiler et Publier
+ * -----------------------------------------------------
+ * Compile le mod et publie la version simultanément sur GitHub Releases et 
+ * Modrinth en utilisant le CHANGELOG.md que vous venez de généré/modifier.
  * * Usage :
  * ./gradlew releaseMod
  *
- * ÉTAPE 3 (Rappel) : Synchroniser avec GitHub
+ * ÉTAPE 4 : Synchroniser avec GitHub
  * -----------------------------------------------------
  * À la fin du processus, n'oubliez pas de faire un 'git pull' pour récupérer 
- * le tag de version créé par GitHub, suivi d'un 'git push' pour envoyer votre 
- * commit de changement de version (gradle.properties).
+ * le tag de version créé par GitHub, puis d'ajouter votre CHANGELOG.md modifié
+ * et de faire un 'git push' pour envoyer vos changements.
  * ============================================================================== */
