@@ -33,20 +33,16 @@ jobs:
       - name: Extract Metadata
         id: metadata
         run: |
-          # tr -d '\r' supprime les éventuels retours chariots invisibles de Windows qui corrompent les variables
-          VERSION=$(grep '^mod_version' gradle.properties | cut -d'=' -f2 | tr -d '\r')
-          MC_VERSION=$(grep '^minecraft_version' gradle.properties | cut -d'=' -f2 | tr -d '\r')
-          V_TYPE=$(grep '^version_type' gradle.properties | cut -d'=' -f2 | tr -d '\r')
+          VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2)
+          MC_VERSION=$(grep 'minecraft_version' gradle.properties | cut -d'=' -f2)
+          V_TYPE=$(grep 'version_type' gradle.properties | cut -d'=' -f2)
+          
+          TAG_VERSION="v${VERSION}+mc${MC_VERSION}"
           
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "MC_VERSION=$MC_VERSION" >> $GITHUB_ENV
           echo "VERSION_TYPE=$V_TYPE" >> $GITHUB_ENV
-
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "IS_MAIN=true" >> $GITHUB_ENV
-          else
-            echo "IS_MAIN=false" >> $GITHUB_ENV
-          fi
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
 
       # 2. Build
       - name: Make gradlew executable
@@ -59,10 +55,12 @@ jobs:
       - name: Generate Changelog
         id: changelog
         run: |
-          echo "## ✨ What's New in Version ${{ env.VERSION }}" > CHANGELOG.md
+          echo "## ✨ What's New in Version ${{ env.VERSION }} (MC ${{ env.MC_VERSION }})" > CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          ALL_COMMITS=$(git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --pretty=format:"%s" | \
+          LAST_TAG=$(git describe --tags --abbrev=0 --match "*+mc${MC_VERSION}" 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          
+          ALL_COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" | \
             sed 's/ + /\n/g' | \
             sed -E 's/^([a-z]+)(!)?:? /\1\2: /')
 
@@ -90,7 +88,7 @@ jobs:
             echo "" >> CHANGELOG.md
           fi
 
-          # --- ⚡ PERFORMANCE & REFACTOR (perf:, refactor:) ---
+          # --- ⚡ PERFORMANCE & REFACTOR ---
           echo "$ALL_COMMITS" | grep -E "^perf|^refactor" > refac.txt || true
           if [ -s refac.txt ]; then
             echo "### ⚡ Performance & Refactoring" >> CHANGELOG.md
@@ -98,7 +96,7 @@ jobs:
             echo "" >> CHANGELOG.md
           fi
 
-          # --- 📚 DOCUMENTATION & CHORE (docs:, chore:, build:, ci:) ---
+          # --- 📚 DOCUMENTATION & CHORE ---
           echo "$ALL_COMMITS" | grep -E "^docs|^chore|^build|^ci" > misc.txt || true
           if [ -s misc.txt ]; then
             echo "### 🛠 Maintenance" >> CHANGELOG.md
@@ -115,11 +113,11 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
+          tag_name: ${{ env.TAG_VERSION }}
+          name: "[${{ env.MC_VERSION }}] Toolsmith Sharper v${{ env.VERSION }}"
           body_path: CHANGELOG.md
           files: build/libs/*.jar
-          make_latest: ${{ env.IS_MAIN == 'true' }} 
+          make_latest: ${{ github.ref == 'refs/heads/main' }}
           prerelease: ${{ env.VERSION_TYPE != 'release' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -130,9 +128,9 @@ jobs:
         with:
           token: ${{ secrets.MODRINTH_TOKEN }}
           project-id: "45jKiDQH" 
-          version-number: ${{ env.VERSION }}
+          version-number: ${{ env.TAG_VERSION }}
           version-type: ${{ env.VERSION_TYPE }}
-          version-title: "Toolsmith Sharper ${{ env.VERSION }}"
+          version-title: "[${{ env.MC_VERSION }}] Toolsmith Sharper v${{ env.VERSION }}"
           changelog: ${{ env.CHANGELOG_CONTENT }}
           files: |
             build/libs/*.jar
